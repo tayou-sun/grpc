@@ -7,6 +7,6 @@
 
 # Дополнительная документация
 * https://developers.google.com/protocol-buffers/docs/gotutorial
-* https://github.com/grpc/grpc-go/tree/master/examples
+* https://github.com/grpc/grpc
 * https://grpc.io/docs/tutorials/
 * https://metanit.com/sharp/aspnet5/32.1.phps
