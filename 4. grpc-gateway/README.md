@@ -4,14 +4,14 @@
 
 Получение .go сервисjd по .proto файлу:
 
-# сгенерировать .pb.go
+## сгенерировать .pb.go
 protoc -I/usr/local/include -I. \
   -I$GOPATH/src \
   -I grpc-gateway \
   --go_out=plugins=grpc:. \
   session.proto
 
-# gateway
+## gateway
 protoc -I/usr/local/include -I. \
   -I$GOPATH/src \
   -I grpc-gateway/third_party/googleapis \
@@ -27,7 +27,7 @@ $ cd server
 $ go run *.go
 ```
 
-# HTTP-запросы
+## HTTP-запросы
 * curl -X POST -k http://localhost:8080/v1/session/create -H "Content-Type: text/plain" -d '{"login":"login", "useragent": "chrome"}'
 
 * curl http://localhost:8080/v1/session/check/XVlBzgbaiC
