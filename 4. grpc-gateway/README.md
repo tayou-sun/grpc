@@ -27,5 +27,7 @@ $ cd server
 $ go run *.go
 ```
 
-curl -X POST -k http://localhost:8080/v1/session/create -H "Content-Type: text/plain" -d '{"login":"login", "useragent": "chrome"}'
-curl http://localhost:8080/v1/session/check/XVlBzgbaiC
+# HTTP-запросы
+* curl -X POST -k http://localhost:8080/v1/session/create -H "Content-Type: text/plain" -d '{"login":"login", "useragent": "chrome"}'
+
+* curl http://localhost:8080/v1/session/check/XVlBzgbaiC
