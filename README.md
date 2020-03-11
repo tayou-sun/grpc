@@ -1,5 +1,5 @@
 
-# Установка grpc:
+# Установка grpc
 1. Скачать https://github.com/google/protobuf/releases
 2. go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 3. go get -u google.golang.org/grpc
