@@ -15,23 +15,36 @@ import (
 
 func main() {
 
+	//установка соединения с сервером
 	grcpConn, err := grpc.Dial(
 		"127.0.0.1:8081",
+		//обозначает, что байты не будут шифроваться
 		grpc.WithInsecure(),
 	)
 	if err != nil {
-		log.Fatalf("cant connect to grpc")
+		log.Fatalf("Ошибка: невозможно соединиться с сервером")
 	}
+	//defer - функция grcpConn.Close() будет выполнена
+	//перед завершением работы программы
 	defer grcpConn.Close()
 
+	//созданание клиента
 	tr := translit.NewTransliterationClient(grcpConn)
 
+	//создание контекста
+	//Контекст - это просто сборник мета-данных, ассоциированных с каким-то запросом
+	//возвращает пустой контекст
 	ctx := context.Background()
-	client, err := tr.EnRu( )
 
+	client, err := tr.EnRu(ctx)
+
+	// WaitGroup - синхронизация горутин
 	wg := &sync.WaitGroup{}
+
+	//обьявление, что будет две горутины
 	wg.Add(2)
 
+	//отправка данных потока
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()
 		words := []string{"privet", "kak", "dela"}
@@ -43,9 +56,9 @@ func main() {
 			time.Sleep(time.Millisecond)
 		}
 		client.CloseSend()
-		fmt.Println("\tsend done")
 	}(wg)
 
+	//получение данных с потока
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()
 		for {
@@ -54,7 +67,6 @@ func main() {
 				fmt.Println("\tstream closed")
 				return
 			} else if err != nil {
-				fmt.Println("\terror happed", err)
 				return
 			}
 			fmt.Println(" <-", outWord.Word)

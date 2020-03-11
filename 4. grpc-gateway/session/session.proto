@@ -16,26 +16,6 @@ message Session {
 message Nothing {
   bool dummy = 1;
 }
-
-/*
-protoc -I/usr/local/include -I. \
-  -I$GOPATH/src \
-  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-  --go_out=plugins=grpc:. \
-  session.proto
-protoc -I/usr/local/include -I. \
-  -I$GOPATH/src \
-  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-  --grpc-gateway_out=logtostderr=true:. \
-  session.proto
-protoc -I/usr/local/include -I. \
-  -I$GOPATH/src \
-  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-  --swagger_out=logtostderr=true:. \
-  session.proto
-*/
-
-// grpc-сервис проверки авторизации
 service AuthChecker {
     rpc Create (Session) returns (SessionID) {
       option (google.api.http) = {
@@ -48,6 +28,9 @@ service AuthChecker {
         get: "/v1/session/check/{ID}"
       };
     }
+
+    //возыращает стуктуру-заглушку Nothing,
+    //так как сервис всегда должен что-то возвращать
     rpc Delete (SessionID) returns (Nothing) {
       option (google.api.http) = {
         post: "/v1/session/delete"

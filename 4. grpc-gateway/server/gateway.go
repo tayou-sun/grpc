@@ -10,11 +10,13 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
-	// "../session"
 	"coursera/microservices/gateway/session"
 )
 
 func main() {
+
+	//запуск одноверменно двух серверов
+	//прокси и grpc-сервера
 	proxyAddr := ":8080"
 	serviceAddr := "127.0.0.1:8081"
 
@@ -22,23 +24,18 @@ func main() {
 	HTTPProxy(proxyAddr, serviceAddr)
 }
 
-/*
-curl -X POST -k http://localhost:8080/v1/session/create -H "Content-Type: text/plain" -d '{"login":"rvasily", "useragent": "chrome"}'
-curl http://localhost:8080/v1/session/check/XVlBzgbaiC
-curl -X POST -k http://localhost:8080/v1/session/delete -H "Content-Type: text/plain" -d '{"ID":"XVlBzgbaiC"}'
-*/
-
 func gRPCService(serviceAddr string) {
+
 	lis, err := net.Listen("tcp", serviceAddr)
+
 	if err != nil {
-		log.Fatalln("failed to listen TCP port", err)
+		log.Fatalln("Ошибка", err)
 	}
 
 	server := grpc.NewServer()
 
 	session.RegisterAuthCheckerServer(server, NewSessionManager())
 
-	fmt.Println("starting gRPC server at " + serviceAddr)
 	server.Serve(lis)
 }
 
@@ -48,10 +45,12 @@ func HTTPProxy(proxyAddr, serviceAddr string) {
 		grpc.WithInsecure(),
 	)
 	if err != nil {
-		log.Fatalln("failed to connect to grpc", err)
+		log.Fatalln("Ошибка", err)
 	}
 	defer grcpConn.Close()
 
+	//создание мультиплексора
+	//сопоставление запроса и обрабатывающей функции
 	grpcGWMux := runtime.NewServeMux()
 
 	err = session.RegisterAuthCheckerHandler(
@@ -60,16 +59,16 @@ func HTTPProxy(proxyAddr, serviceAddr string) {
 		grcpConn,
 	)
 	if err != nil {
-		log.Fatalln("failed to start HTTP server", err)
+		log.Fatalln("Ошибка", err)
 	}
 
 	mux := http.NewServeMux()
-	// отправляем в прокси только то что нужно
+
+	// отправляем в прокси только то, что нужно
 	mux.Handle("/v1/session/", grpcGWMux)
 
 	mux.HandleFunc("/", helloWorld)
 
-	fmt.Println("starting HTTP server at " + proxyAddr)
 	log.Fatal(http.ListenAndServe(proxyAddr, mux))
 
 }

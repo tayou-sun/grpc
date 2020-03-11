@@ -4,7 +4,6 @@ import (
 	// "../session"
 	"coursera/microservices/gateway/session"
 
-	"fmt"
 	"math/rand"
 	"sync"
 
@@ -29,7 +28,6 @@ func NewSessionManager() *SessionManager {
 }
 
 func (sm *SessionManager) Create(ctx context.Context, in *session.Session) (*session.SessionID, error) {
-	fmt.Println("call Create", in)
 	id := &session.SessionID{RandStringRunes(sessKeyLen)}
 	sm.mu.Lock()
 	sm.sessions[*id] = in
@@ -38,7 +36,6 @@ func (sm *SessionManager) Create(ctx context.Context, in *session.Session) (*ses
 }
 
 func (sm *SessionManager) Check(ctx context.Context, in *session.SessionID) (*session.Session, error) {
-	fmt.Println("call Check", in)
 	sm.mu.RLock()
 	defer sm.mu.RUnlock()
 	if sess, ok := sm.sessions[*in]; ok {
@@ -48,7 +45,6 @@ func (sm *SessionManager) Check(ctx context.Context, in *session.SessionID) (*se
 }
 
 func (sm *SessionManager) Delete(ctx context.Context, in *session.SessionID) (*session.Nothing, error) {
-	fmt.Println("call Delete", in)
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
 	delete(sm.sessions, *in)
